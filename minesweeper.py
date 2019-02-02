@@ -87,12 +87,27 @@ def generate_numbers():
                 continue
             GAMEBOARD[x][y] = str(count_bombs(x, y))
 
+def place_within_tag(element):
+    return SPOILERS_CHAR + element + SPOILERS_CHAR
+
 def generate_emoji_board():
     board = ''
     for x in range(0, BOARD_X):
+        tmp = ''
         for y in range(0, BOARD_Y):
-            board += SPOILERS_CHAR + ':' + CHARACTER_LOOKUP[GAMEBOARD[x][y]] + ':' + SPOILERS_CHAR
+            if check_block(x, y) == '0':
+                tmp += ':' + CHARACTER_LOOKUP[GAMEBOARD[x][y]] + ':'
+                continue
+            else:
+                if len(tmp) > 0:
+                    board += place_within_tag(tmp)
+                    tmp = ''
+            board += place_within_tag(':' + CHARACTER_LOOKUP[GAMEBOARD[x][y]] + ':')
+        if len(tmp) > 0:
+            board += place_within_tag(tmp)
+            tmp = ''
         board += '\n'
+
     print(board)
 
 def main(argc, argv):
